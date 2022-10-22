@@ -1,15 +1,16 @@
+#include <wx/statline.h>
 #include "NoteViewer.h"
 #include "XPM/xpm_include.h"
 
 BEGIN_EVENT_TABLE(NoteViewer, wxFrame)
-
+	EVT_MENU(wxID_EXIT, NoteViewer::OnExit)
 END_EVENT_TABLE()
 
 NoteViewer::NoteViewer()
 	: wxFrame{ nullptr, wxID_ANY, _T("Note Viewer"), wxDefaultPosition, WINDOW_SIZE, WINDOW_STYLE }
 {
-	this->SetMinSize(WINDOW_SIZE);
 	this->Init();
+	this->SetMinSize(WINDOW_SIZE);
 }
 
 void NoteViewer::Init()
@@ -17,6 +18,8 @@ void NoteViewer::Init()
 	this->SetupBitmaps();
 	this->SetupToolBar();
 	this->SetupMenuBar();
+	this->SetupControls();
+	this->SetupSizers();
 }
 
 void NoteViewer::SetupBitmaps()
@@ -71,4 +74,74 @@ void NoteViewer::SetupMenuBar()
 	m_pMenuBar->Append(m_pFileMenu, _T("&File"));
 	m_pMenuBar->Append(m_pEditMenu, _T("&Edit"));
 	this->SetMenuBar(m_pMenuBar);
+}
+
+void NoteViewer::SetupControls()
+{
+	m_clearButton = new wxButton(this, ID_CLEAR_TEXT, _T("Clear Text"), wxDefaultPosition, wxDefaultSize);
+	m_fontButton = new wxButton(this, ID_CHANGE_FONT, _T("Change Font"), wxDefaultPosition, wxDefaultSize);
+	m_pTextBox = new wxTextCtrl(this, wxID_ANY, _T("Open (Ctrl + 0) or drag in a text file.\n"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+}
+
+void NoteViewer::SetupSizers()
+{
+	// Sizer setup
+	m_topSizer = new wxBoxSizer(wxVERTICAL);
+	m_buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+
+	this->SetSizerAndFit(m_topSizer);
+	m_topSizer->Add(m_buttonSizer);
+
+	// Add elements
+	m_buttonSizer->Add(m_clearButton, 0, wxALIGN_LEFT | wxALL, 5);
+	m_buttonSizer->Add(m_fontButton, 0, wxALIGN_LEFT | wxALL, 5);
+	m_topSizer->Add(new wxStaticLine(this, wxID_STATIC), 0, wxEXPAND | wxALL, 5);
+	m_topSizer->Add(m_pTextBox, 1, wxEXPAND | wxALL, 5);
+}
+
+// Events
+
+void NoteViewer::OnExit(wxCommandEvent& event)
+{
+	this->Destroy();
+}
+
+void NoteViewer::OnOpen(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnSave(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnSaveAs(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnCut(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnCopy(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnPaste(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnUndo(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnRedo(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnZoomIn(wxCommandEvent& event)
+{
+}
+
+void NoteViewer::OnZoomOut(wxCommandEvent& event)
+{
 }
