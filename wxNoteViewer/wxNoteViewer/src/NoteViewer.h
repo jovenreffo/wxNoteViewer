@@ -2,6 +2,7 @@
 #define _NOTEVIEWER_H_
 
 #include <wx/wx.h>
+#include <wx/textctrl.h>
 
 #define WINDOW_SIZE (wxSize(670, 500))
 #define WINDOW_STYLE (wxDEFAULT_FRAME_STYLE)
@@ -25,6 +26,7 @@ class NoteViewer: public wxFrame
 	DECLARE_EVENT_TABLE()
 
 private:
+	wxTextCtrl* m_pTextBox;
 	wxToolBar* m_pToolBar;
 	wxMenuBar* m_pMenuBar;
 	wxMenu* m_pFileMenu;
@@ -51,6 +53,17 @@ public:
 	void SetupMenuBar();
 
 	// Events
+	void OnExit(wxCommandEvent& event);
+	void OnOpen(wxCommandEvent& event);
+	void OnSave(wxCommandEvent& event);
+	void OnSaveAs(wxCommandEvent& event);
+	void OnCut(wxCommandEvent& event);
+	void OnCopy(wxCommandEvent& event);
+	void OnPaste(wxCommandEvent& event);
+	void OnUndo(wxCommandEvent& event);
+	void OnRedo(wxCommandEvent& event);
+	void OnZoomIn(wxCommandEvent& event);
+	void OnZoomOut(wxCommandEvent& event);
 };
 
 #endif
