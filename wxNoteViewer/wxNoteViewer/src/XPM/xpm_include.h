@@ -8,5 +8,8 @@
 #include "redo.xpm"
 #include "zoomin.xpm"
 #include "zoomout.xpm"
+#include "save.xpm"
+#include "saveas.xpm"
+#include "open.xpm"
 
 #endif
