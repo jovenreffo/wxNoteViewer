@@ -93,6 +93,7 @@ void NoteViewer::SetupMenuBar()
 	m_pEditMenu = new wxMenu();
 
 	m_pFileMenu->Append(ID_SAVE, _T("&Save\tCtrl+S"));
+	m_pFileMenu->Append(ID_SAVEAS, _T("&Save As...\tCtrl+Shift+S"));
 	m_pFileMenu->Append(ID_OPEN, _T("&Open...\tCtrl+O"));
 	m_pFileMenu->AppendSeparator();
 	m_pFileMenu->Append(wxID_EXIT, _T("&Exit"));
