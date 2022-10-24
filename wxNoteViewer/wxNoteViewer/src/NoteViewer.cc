@@ -57,8 +57,8 @@ void NoteViewer::SetupBitmaps()
 	m_redoBmp = wxBitmap(redo_xpm);
 	m_zoomInBmp = wxBitmap(zoomin_xpm);
 	m_zoomOutBmp = wxBitmap(zoomout_xpm);
-	m_openBmp =	wxBitmap(open_xpm);
-	m_saveBmp =	wxBitmap(save_xpm);
+	m_openBmp = wxBitmap(open_xpm);
+	m_saveBmp = wxBitmap(save_xpm);
 	m_saveAsBmp = wxBitmap(saveas_xpm);
 }
 
