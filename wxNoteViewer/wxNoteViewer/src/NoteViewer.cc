@@ -4,6 +4,8 @@
 
 BEGIN_EVENT_TABLE(NoteViewer, wxFrame)
 	EVT_TEXT(wxID_ANY, NoteViewer::OnText)
+	EVT_BUTTON(ID_CLEAR_TEXT, NoteViewer::OnClearText)
+	EVT_BUTTON(ID_CHANGE_FONT, NoteViewer::OnChangeFont)
 	// Menu events
 	EVT_MENU(wxID_EXIT, NoteViewer::OnExit)
 	EVT_MENU(ID_CUT, NoteViewer::OnCut)
@@ -144,6 +146,15 @@ void NoteViewer::OnText(wxCommandEvent& event)
 	m_bFileSaved = false;
 }
 
+void NoteViewer::OnClearText(wxCommandEvent& event)
+{
+	m_pTextBox->Clear();
+}
+
+void NoteViewer::OnChangeFont(wxCommandEvent& event)
+{
+}
+
 void NoteViewer::OnOpen(wxCommandEvent& event)
 {
 	wxFileDialog* openDialog = new wxFileDialog(this, _T("Open text file"), wxEmptyString, wxEmptyString, _T("Text files (*.txt)|*.txt"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -174,12 +185,14 @@ void NoteViewer::OnSave(wxCommandEvent& event)
 
 void NoteViewer::OnSaveAs(wxCommandEvent& event)
 {
-	wxFileDialog* saveDialog = new wxFileDialog(this, _T("Save text file"), wxEmptyString, wxEmptyString, _T("Save text files (*.txt)|*.txt"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog* saveDialog = new wxFileDialog(this, _T("Save text file"), wxEmptyString, wxEmptyString, _T("Text files (*.txt)|*.txt"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 	if (saveDialog->ShowModal() == wxID_OK)
 	{
 		m_saveFilePath = saveDialog->GetPath();
+		m_currentFileName = saveDialog->GetFilename();
 		m_pTextBox->SaveFile(m_saveFilePath);
+		this->SetLabel(wxString("Note Viewer - ") << m_currentFileName);
 		m_bFileSaved = true;
 	}
 
