@@ -3,7 +3,31 @@
 #include "XPM/xpm_include.h"
 
 BEGIN_EVENT_TABLE(NoteViewer, wxFrame)
+	EVT_TEXT(wxID_ANY, NoteViewer::OnText)
+	// Menu events
 	EVT_MENU(wxID_EXIT, NoteViewer::OnExit)
+	EVT_MENU(ID_CUT, NoteViewer::OnCut)
+	EVT_MENU(ID_COPY, NoteViewer::OnCopy)
+	EVT_MENU(ID_PASTE, NoteViewer::OnPaste)
+	EVT_MENU(ID_SELECT_ALL, NoteViewer::OnSelectAll)
+	EVT_MENU(ID_UNDO, NoteViewer::OnUndo)
+	EVT_MENU(ID_REDO, NoteViewer::OnRedo)
+	EVT_MENU(ID_ZOOMIN, NoteViewer::OnZoomIn)
+	EVT_MENU(ID_ZOOMOUT, NoteViewer::OnZoomOut)
+	EVT_MENU(ID_OPEN, NoteViewer::OnOpen)
+	EVT_MENU(ID_SAVE, NoteViewer::OnSave)
+	EVT_MENU(ID_SAVEAS, NoteViewer::OnSaveAs)
+	// Tool events
+	EVT_TOOL(ID_CUT, NoteViewer::OnCut)
+	EVT_TOOL(ID_COPY, NoteViewer::OnCopy)
+	EVT_TOOL(ID_PASTE, NoteViewer::OnPaste)
+	EVT_TOOL(ID_UNDO, NoteViewer::OnUndo)
+	EVT_TOOL(ID_REDO, NoteViewer::OnRedo)
+	EVT_TOOL(ID_ZOOMIN, NoteViewer::OnZoomIn)
+	EVT_TOOL(ID_ZOOMOUT, NoteViewer::OnZoomOut)
+	EVT_TOOL(ID_OPEN, NoteViewer::OnOpen)
+	EVT_TOOL(ID_SAVE, NoteViewer::OnSave)
+	EVT_TOOL(ID_SAVEAS, NoteViewer::OnSaveAs)
 END_EVENT_TABLE()
 
 NoteViewer::NoteViewer()
@@ -25,10 +49,10 @@ void NoteViewer::Init()
 void NoteViewer::SetupBitmaps()
 {
 	m_cutBmp = wxBitmap(cut_xpm);
-	m_copyBmp =	wxBitmap(copy_xpm);
+	m_copyBmp = wxBitmap(copy_xpm);
 	m_pasteBmp = wxBitmap(paste_xpm);
-	m_undoBmp =	wxBitmap(undo_xpm);
-	m_redoBmp =	wxBitmap(redo_xpm);
+	m_undoBmp = wxBitmap(undo_xpm);
+	m_redoBmp = wxBitmap(redo_xpm);
 	m_zoomInBmp = wxBitmap(zoomin_xpm);
 	m_zoomOutBmp = wxBitmap(zoomout_xpm);
 	m_openBmp =	wxBitmap(open_xpm);
@@ -71,6 +95,15 @@ void NoteViewer::SetupMenuBar()
 	m_pFileMenu->AppendSeparator();
 	m_pFileMenu->Append(wxID_EXIT, _T("&Exit"));
 
+	m_pEditMenu->Append(ID_UNDO, _T("&Undo\tCtrl+Z"));
+	m_pEditMenu->Append(ID_REDO, _T("&Redo\tCtrl+Shift+Z"));
+	m_pEditMenu->AppendSeparator();
+	m_pEditMenu->Append(ID_CUT, _T("&Cut\tCtrl+X"));
+	m_pEditMenu->Append(ID_COPY, _T("&Copy\tCtrl+C"));
+	m_pEditMenu->Append(ID_PASTE, _T("&Paste\tCtrl+V"));
+	m_pEditMenu->Append(ID_SELECT_ALL, _T("&Select All\tCtrl+A"));
+	
+
 	m_pMenuBar->Append(m_pFileMenu, _T("&File"));
 	m_pMenuBar->Append(m_pEditMenu, _T("&Edit"));
 	this->SetMenuBar(m_pMenuBar);
@@ -95,7 +128,7 @@ void NoteViewer::SetupSizers()
 	// Add elements
 	m_buttonSizer->Add(m_clearButton, 0, wxALIGN_LEFT | wxALL, 5);
 	m_buttonSizer->Add(m_fontButton, 0, wxALIGN_LEFT | wxALL, 5);
-	m_topSizer->Add(new wxStaticLine(this, wxID_STATIC), 0, wxEXPAND | wxALL, 5);
+	//m_topSizer->Add(new wxStaticLine(this, wxID_STATIC), 0, wxEXPAND | wxALL, 5);
 	m_topSizer->Add(m_pTextBox, 1, wxEXPAND | wxALL, 5);
 }
 
@@ -106,40 +139,92 @@ void NoteViewer::OnExit(wxCommandEvent& event)
 	this->Destroy();
 }
 
+void NoteViewer::OnText(wxCommandEvent& event)
+{
+	m_bFileSaved = false;
+}
+
 void NoteViewer::OnOpen(wxCommandEvent& event)
 {
+	wxFileDialog* openDialog = new wxFileDialog(this, _T("Open text file"), wxEmptyString, wxEmptyString, _T("Text files (*.txt)|*.txt"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+
+	// Check if the user has loaded a file and confirm they want to overwrite its contents.
+	if (m_bCurrentFile && !m_bFileSaved)
+		if (wxMessageBox(_T("Current file has not been saved. Would you like to proceed?"), _T("Confirm"), wxICON_WARNING | wxYES_NO) == wxNO)
+			return;
+
+	if (openDialog->ShowModal() == wxID_OK)
+	{
+		// Overwrite the current text with the new text and change the window title.
+		m_currentFilePath = openDialog->GetPath();
+		m_currentFileName = openDialog->GetFilename();
+		m_pTextBox->LoadFile(m_currentFilePath);
+		this->SetLabel(wxString("Note Viewer - ") << m_currentFileName);
+		m_bCurrentFile = true;
+	}
+
+	openDialog->Destroy();
 }
 
 void NoteViewer::OnSave(wxCommandEvent& event)
 {
+	m_pTextBox->SaveFile(m_saveFilePath);
+	m_bFileSaved = true;
 }
 
 void NoteViewer::OnSaveAs(wxCommandEvent& event)
 {
+	wxFileDialog* saveDialog = new wxFileDialog(this, _T("Save text file"), wxEmptyString, wxEmptyString, _T("Save text files (*.txt)|*.txt"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+	if (saveDialog->ShowModal() == wxID_OK)
+	{
+		m_saveFilePath = saveDialog->GetPath();
+		m_pTextBox->SaveFile(m_saveFilePath);
+		m_bFileSaved = true;
+	}
+
+	saveDialog->Destroy();
 }
 
 void NoteViewer::OnCut(wxCommandEvent& event)
 {
+	if (m_pTextBox->CanCut())
+		m_pTextBox->Cut();
 }
 
 void NoteViewer::OnCopy(wxCommandEvent& event)
 {
+	if (m_pTextBox->CanCopy())
+		m_pTextBox->Copy();
 }
 
 void NoteViewer::OnPaste(wxCommandEvent& event)
 {
+	if (m_pTextBox->CanPaste())
+		m_pTextBox->Paste();
+}
+
+void NoteViewer::OnSelectAll(wxCommandEvent& event)
+{
+	m_pTextBox->SelectAll();
 }
 
 void NoteViewer::OnUndo(wxCommandEvent& event)
 {
+	if (m_pTextBox->CanUndo())
+		m_pTextBox->Undo();
 }
 
 void NoteViewer::OnRedo(wxCommandEvent& event)
 {
+	if (m_pTextBox->CanRedo())
+		m_pTextBox->Redo();
 }
 
 void NoteViewer::OnZoomIn(wxCommandEvent& event)
 {
+	int textSize{ m_pTextBox->GetFont().GetPointSize() };
+	++textSize;
 }
 
 void NoteViewer::OnZoomOut(wxCommandEvent& event)
