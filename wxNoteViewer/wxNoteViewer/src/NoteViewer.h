@@ -72,6 +72,8 @@ public:
 	void SetupSizers();
 
 	// Events
+	void OnDropFile(wxDropFilesEvent& event);
+	void OnMouse(wxMouseEvent& event);
 	void OnExit(wxCommandEvent& event);
 	void OnText(wxCommandEvent& event);
 	void OnClearText(wxCommandEvent& event);

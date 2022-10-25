@@ -3,6 +3,8 @@
 #include "XPM/xpm_include.h"
 
 BEGIN_EVENT_TABLE(NoteViewer, wxFrame)
+	EVT_DROP_FILES(NoteViewer::OnDropFile)
+	EVT_MOUSEWHEEL(NoteViewer::OnMouse)
 	EVT_TEXT(wxID_ANY, NoteViewer::OnText)
 	EVT_BUTTON(ID_CLEAR_TEXT, NoteViewer::OnClearText)
 	EVT_BUTTON(ID_CHANGE_FONT, NoteViewer::OnChangeFont)
@@ -117,6 +119,7 @@ void NoteViewer::SetupControls()
 	m_clearButton = new wxButton(this, ID_CLEAR_TEXT, _T("Clear Text"), wxDefaultPosition, wxDefaultSize);
 	m_fontButton = new wxButton(this, ID_CHANGE_FONT, _T("Change Font"), wxDefaultPosition, wxDefaultSize);
 	m_pTextBox = new wxTextCtrl(this, wxID_ANY, _T("Open (Ctrl + 0) or drag in a text file.\n"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+	m_pTextBox->DragAcceptFiles(true);
 }
 
 void NoteViewer::SetupSizers()
@@ -136,6 +139,15 @@ void NoteViewer::SetupSizers()
 }
 
 // Events
+
+void NoteViewer::OnDropFile(wxDropFilesEvent& event)
+{
+	wxLogMessage("File dropped.\n");
+}
+
+void NoteViewer::OnMouse(wxMouseEvent& event)
+{
+}
 
 void NoteViewer::OnExit(wxCommandEvent& event)
 {
