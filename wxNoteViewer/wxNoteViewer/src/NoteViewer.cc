@@ -237,10 +237,15 @@ void NoteViewer::OnRedo(wxCommandEvent& event)
 
 void NoteViewer::OnZoomIn(wxCommandEvent& event)
 {
+	// Add text zoom by getting the current font size and changing it accordingly, and keeping the font the user selected
 	int textSize{ m_pTextBox->GetFont().GetPointSize() };
 	++textSize;
+	m_pTextBox->SetFont(wxFont(textSize, m_pTextBox->GetFont().GetFamily(), m_pTextBox->GetFont().GetStyle(), m_pTextBox->GetFont().GetWeight(), false));
 }
 
 void NoteViewer::OnZoomOut(wxCommandEvent& event)
 {
+	int textSize{ m_pTextBox->GetFont().GetPointSize() };
+	--textSize;
+	m_pTextBox->SetFont(wxFont(textSize, m_pTextBox->GetFont().GetFamily(), m_pTextBox->GetFont().GetStyle(), m_pTextBox->GetFont().GetWeight(), false));
 }
