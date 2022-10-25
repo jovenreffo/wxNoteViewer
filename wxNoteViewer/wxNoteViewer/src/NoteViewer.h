@@ -74,6 +74,8 @@ public:
 	// Events
 	void OnExit(wxCommandEvent& event);
 	void OnText(wxCommandEvent& event);
+	void OnClearText(wxCommandEvent& event);
+	void OnChangeFont(wxCommandEvent& event);
 	void OnOpen(wxCommandEvent& event);
 	void OnSave(wxCommandEvent& event);
 	void OnSaveAs(wxCommandEvent& event);
