@@ -22,7 +22,8 @@ enum
 	ID_SAVE,
 	ID_SAVEAS,
 	ID_CLEAR_TEXT,
-	ID_CHANGE_FONT
+	ID_CHANGE_FONT,
+	ID_FULLSCREEN
 };
 
 class NoteViewer: public wxFrame
@@ -50,6 +51,7 @@ private:
 	wxMenuBar* m_pMenuBar;
 	wxMenu* m_pFileMenu;
 	wxMenu* m_pEditMenu;
+	wxMenu* m_pViewMenu;
 
 	wxBitmap m_cutBmp;
 	wxBitmap m_copyBmp;
@@ -77,6 +79,7 @@ public:
 	void ZoomOut();
 
 	// Events
+	void OnFullScreen(wxCommandEvent& event);
 	void OnDropFile(wxDropFilesEvent& event);
 	void OnMouse(wxMouseEvent& event);
 	void OnExit(wxCommandEvent& event);
