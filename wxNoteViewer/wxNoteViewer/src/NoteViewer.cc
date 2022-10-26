@@ -4,7 +4,6 @@
 
 BEGIN_EVENT_TABLE(NoteViewer, wxFrame)
 	EVT_DROP_FILES(NoteViewer::OnDropFile)
-	EVT_MOUSEWHEEL(NoteViewer::OnMouse)
 	EVT_TEXT(wxID_ANY, NoteViewer::OnText)
 	EVT_BUTTON(ID_CLEAR_TEXT, NoteViewer::OnClearText)
 	EVT_BUTTON(ID_CHANGE_FONT, NoteViewer::OnChangeFont)
@@ -119,7 +118,9 @@ void NoteViewer::SetupControls()
 	m_clearButton = new wxButton(this, ID_CLEAR_TEXT, _T("Clear Text"), wxDefaultPosition, wxDefaultSize);
 	m_fontButton = new wxButton(this, ID_CHANGE_FONT, _T("Change Font"), wxDefaultPosition, wxDefaultSize);
 	m_pTextBox = new wxTextCtrl(this, wxID_ANY, _T("Open (Ctrl + 0) or drag in a text file.\n"), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+
 	m_pTextBox->DragAcceptFiles(true);
+	m_pTextBox->Bind(wxEVT_MOUSEWHEEL, &NoteViewer::OnMouse, this); // Connect the mouse event handler so zooming is not processed outside of the textbox.
 }
 
 void NoteViewer::SetupSizers()
@@ -138,15 +139,46 @@ void NoteViewer::SetupSizers()
 	m_topSizer->Add(m_pTextBox, 1, wxEXPAND | wxALL, 5);
 }
 
+// Zooming
+
+void NoteViewer::ZoomIn()
+{
+	// Add text zoom by getting the current font size and changing it accordingly, and keeping the font the user selected
+	m_nFontSize = m_pTextBox->GetFont().GetPointSize();
+	++m_nFontSize;
+	m_pTextBox->SetFont(wxFont(m_nFontSize, m_pTextBox->GetFont().GetFamily(), m_pTextBox->GetFont().GetStyle(), m_pTextBox->GetFont().GetWeight(), false));
+}
+
+void NoteViewer::ZoomOut()
+{
+	m_nFontSize = m_pTextBox->GetFont().GetPointSize();
+	--m_nFontSize;
+	m_pTextBox->SetFont(wxFont(m_nFontSize, m_pTextBox->GetFont().GetFamily(), m_pTextBox->GetFont().GetStyle(), m_pTextBox->GetFont().GetWeight(), false));
+}
+
 // Events
 
 void NoteViewer::OnDropFile(wxDropFilesEvent& event)
 {
-	wxLogMessage("File dropped.\n");
 }
 
 void NoteViewer::OnMouse(wxMouseEvent& event)
 {
+	if (event.ControlDown() && event.GetWheelRotation() > 0)
+	{
+		this->ZoomIn();
+#ifdef _DEBUG
+		//m_pTextBox->AppendText(wxString() << "Delta: " << event.GetWheelRotation() << '\n');
+#endif
+	}
+
+	if (event.ControlDown() && event.GetWheelRotation() < 0)
+	{
+		this->ZoomOut();
+#ifdef _DEBUG
+		//m_pTextBox->AppendText(wxString() << "Delta: " << event.GetWheelRotation() << '\n');
+#endif
+	}
 }
 
 void NoteViewer::OnExit(wxCommandEvent& event)
@@ -249,15 +281,10 @@ void NoteViewer::OnRedo(wxCommandEvent& event)
 
 void NoteViewer::OnZoomIn(wxCommandEvent& event)
 {
-	// Add text zoom by getting the current font size and changing it accordingly, and keeping the font the user selected
-	int textSize{ m_pTextBox->GetFont().GetPointSize() };
-	++textSize;
-	m_pTextBox->SetFont(wxFont(textSize, m_pTextBox->GetFont().GetFamily(), m_pTextBox->GetFont().GetStyle(), m_pTextBox->GetFont().GetWeight(), false));
+	this->ZoomIn();
 }
 
 void NoteViewer::OnZoomOut(wxCommandEvent& event)
 {
-	int textSize{ m_pTextBox->GetFont().GetPointSize() };
-	--textSize;
-	m_pTextBox->SetFont(wxFont(textSize, m_pTextBox->GetFont().GetFamily(), m_pTextBox->GetFont().GetStyle(), m_pTextBox->GetFont().GetWeight(), false));
+	this->ZoomOut();
 }
