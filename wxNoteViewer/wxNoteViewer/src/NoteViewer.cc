@@ -8,6 +8,7 @@ BEGIN_EVENT_TABLE(NoteViewer, wxFrame)
 	EVT_BUTTON(ID_CLEAR_TEXT, NoteViewer::OnClearText)
 	EVT_BUTTON(ID_CHANGE_FONT, NoteViewer::OnChangeFont)
 	// Menu events
+	EVT_MENU(ID_FULLSCREEN, NoteViewer::OnFullScreen)
 	EVT_MENU(wxID_EXIT, NoteViewer::OnExit)
 	EVT_MENU(ID_CUT, NoteViewer::OnCut)
 	EVT_MENU(ID_COPY, NoteViewer::OnCopy)
@@ -92,6 +93,7 @@ void NoteViewer::SetupMenuBar()
 	m_pMenuBar = new wxMenuBar();
 	m_pFileMenu = new wxMenu();
 	m_pEditMenu = new wxMenu();
+	m_pViewMenu = new wxMenu();
 
 	m_pFileMenu->Append(ID_SAVE, _T("&Save\tCtrl+S"));
 	m_pFileMenu->Append(ID_SAVEAS, _T("&Save As...\tCtrl+Shift+S"));
@@ -106,10 +108,15 @@ void NoteViewer::SetupMenuBar()
 	m_pEditMenu->Append(ID_COPY, _T("&Copy\tCtrl+C"));
 	m_pEditMenu->Append(ID_PASTE, _T("&Paste\tCtrl+V"));
 	m_pEditMenu->Append(ID_SELECT_ALL, _T("&Select All\tCtrl+A"));
-	
+
+	m_pViewMenu->Append(ID_FULLSCREEN, _T("&Toggle Fullscreen\tF11"));
+	m_pViewMenu->AppendSeparator();
+	m_pViewMenu->Append(ID_ZOOMIN, _T("&Zoom In\tCtrl+Shift++"));
+	m_pViewMenu->Append(ID_ZOOMOUT, _T("&Zoom Out\tCtrl+Shift+-"));
 
 	m_pMenuBar->Append(m_pFileMenu, _T("&File"));
 	m_pMenuBar->Append(m_pEditMenu, _T("&Edit"));
+	m_pMenuBar->Append(m_pViewMenu, _T("&View"));
 	this->SetMenuBar(m_pMenuBar);
 }
 
@@ -157,6 +164,11 @@ void NoteViewer::ZoomOut()
 }
 
 // Events
+
+void NoteViewer::OnFullScreen(wxCommandEvent& event)
+{
+	this->ShowFullScreen(!IsFullScreen(), wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION);
+}
 
 void NoteViewer::OnDropFile(wxDropFilesEvent& event)
 {
