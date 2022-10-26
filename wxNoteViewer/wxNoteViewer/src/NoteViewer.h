@@ -30,12 +30,14 @@ class NoteViewer: public wxFrame
 	DECLARE_EVENT_TABLE()
 
 private:
-	wxString m_currentFileName;
-	wxString m_currentFilePath;
-	wxString m_saveFilePath;
+	int m_nFontSize;
 
 	bool m_bCurrentFile{ false };
 	bool m_bFileSaved{ false };
+
+	wxString m_currentFileName;
+	wxString m_currentFilePath;
+	wxString m_saveFilePath;
 
 	wxBoxSizer* m_topSizer;
 	wxBoxSizer* m_buttonSizer;
@@ -70,6 +72,9 @@ public:
 	void SetupMenuBar();
 	void SetupControls();
 	void SetupSizers();
+
+	void ZoomIn();
+	void ZoomOut();
 
 	// Events
 	void OnDropFile(wxDropFilesEvent& event);
