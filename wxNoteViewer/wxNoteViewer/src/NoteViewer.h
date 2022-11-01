@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/textctrl.h>
+#include <wx/fontdlg.h>
 #include <wx/sizer.h>
 
 #define WINDOW_SIZE (wxSize(670, 500))
@@ -33,7 +34,7 @@ class NoteViewer: public wxFrame
 private:
 	int m_nFontSize;
 
-	bool m_bCurrentFile{ false };
+	bool m_bActiveFile{ false };
 	bool m_bFileSaved{ false };
 
 	wxString m_currentFileName;
@@ -63,6 +64,8 @@ private:
 	wxBitmap m_openBmp;
 	wxBitmap m_saveBmp;
 	wxBitmap m_saveAsBmp;
+
+	wxFontDialog* m_pFontDialog;
 
 public:
 	NoteViewer();
