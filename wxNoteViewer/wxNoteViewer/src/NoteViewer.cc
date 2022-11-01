@@ -210,6 +210,14 @@ void NoteViewer::OnClearText(wxCommandEvent& event)
 
 void NoteViewer::OnChangeFont(wxCommandEvent& event)
 {
+	m_pFontDialog = new wxFontDialog(this);
+	m_pFontDialog->Show(true);
+
+	if (m_pFontDialog->ShowModal() == wxID_OK)
+	{
+		wxFontData fontData = m_pFontDialog->GetFontData();
+		m_pTextBox->SetFont(fontData.GetChosenFont());
+	}
 }
 
 void NoteViewer::OnOpen(wxCommandEvent& event)
@@ -217,7 +225,7 @@ void NoteViewer::OnOpen(wxCommandEvent& event)
 	wxFileDialog* openDialog = new wxFileDialog(this, _T("Open text file"), wxEmptyString, wxEmptyString, _T("Text files (*.txt)|*.txt"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	// Check if the user has loaded a file and confirm they want to overwrite its contents.
-	if (m_bCurrentFile && !m_bFileSaved)
+	if (m_bActiveFile && !m_bFileSaved)
 		if (wxMessageBox(_T("Current file has not been saved. Would you like to proceed?"), _T("Confirm"), wxICON_WARNING | wxYES_NO) == wxNO)
 			return;
 
@@ -228,7 +236,7 @@ void NoteViewer::OnOpen(wxCommandEvent& event)
 		m_currentFileName = openDialog->GetFilename();
 		m_pTextBox->LoadFile(m_currentFilePath);
 		this->SetLabel(wxString("Note Viewer - ") << m_currentFileName);
-		m_bCurrentFile = true;
+		m_bActiveFile = true;
 	}
 
 	openDialog->Destroy();
