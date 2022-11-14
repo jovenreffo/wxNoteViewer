@@ -30,6 +30,7 @@ public:
 
 	// Setup
 	void Init();
+	void ShowNoteViewer();
 	void SetupMenuBar();
 
 	// Events

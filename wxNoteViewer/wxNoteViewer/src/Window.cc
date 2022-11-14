@@ -14,6 +14,14 @@ Frame::Frame()
 void Frame::Init()
 {
 	this->SetupMenuBar();
+	this->ShowNoteViewer();
+}
+
+void Frame::ShowNoteViewer()
+{
+	m_pNoteViewer = new NoteViewer();
+	m_pNoteViewer->Show(true);
+	m_pNoteViewer->Centre();
 }
 
 void Frame::SetupMenuBar()
@@ -36,6 +44,5 @@ void Frame::OnExit(wxCommandEvent& event)
 
 void Frame::OnNote(wxCommandEvent& event)
 {
-	m_pNoteViewer = new NoteViewer();
-	m_pNoteViewer->Show(true);
+	this->ShowNoteViewer();
 }
